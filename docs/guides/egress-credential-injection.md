@@ -313,6 +313,13 @@ name. An actor that is deleted and recreated under the same name can get its
 predecessor's token until that token's refresh point, up to two thirds of its
 lifetime, and that token's UID claim names the old actor.
 
+**Credentials are cached on agentgateway.** By default the agentgateway
+dataplane reuses a fetched credential per actor and URI for 5 minutes. A grant
+the provider revokes keeps working until the cached credential expires. To
+send every request to the provider, set `cacheTtl` to `0s` on its
+`atenetEgress.extraCredentialProviders` entry in the Helm chart. The Envoy
+dataplane fetches a credential on every request.
+
 **Scope of the reference provider's RBAC.** The sample deployment grants read
 on Secrets cluster-wide so the policy may name any namespace; a production
 deployment should scope this to the namespaces the provider is allowed to
